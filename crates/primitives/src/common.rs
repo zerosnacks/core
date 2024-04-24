@@ -26,11 +26,33 @@ impl From<Option<Address>> for TxKind {
     }
 }
 
+impl From<TxKind> for Option<Address> {
+    /// Returns the address of the contract that will be called or will receive the transfer.
+    #[inline]
+    fn from(value: TxKind) -> Self {
+        match value {
+            TxKind::Create => None,
+            TxKind::Call(addr) => Some(addr),
+        }
+    }
+}
+
 impl From<Address> for TxKind {
     /// Creates a `TxKind::Call` with the given address.
     #[inline]
     fn from(value: Address) -> Self {
         TxKind::Call(value)
+    }
+}
+
+impl From<TxKind> for Address {
+    /// Returns the address of the contract that will be called or will receive the transfer.
+    #[inline]
+    fn from(value: TxKind) -> Self {
+        match value {
+            TxKind::Create => Address::default(),
+            TxKind::Call(addr) => addr,
+        }
     }
 }
 
